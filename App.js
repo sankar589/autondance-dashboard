@@ -15,7 +15,7 @@ import * as Font from "expo-font";
 SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
-  const [page, setPage] = useState(3);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     async function prepare() {
