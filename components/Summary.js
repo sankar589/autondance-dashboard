@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
-const Page3 = () => {
+const Page2 = () => {
   return (
     <View style={styles.container}>
       <View style={styles.timingdetails}>
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Page3;
+export default Page2;

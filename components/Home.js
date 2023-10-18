@@ -6,12 +6,12 @@ import Modal from "react-native-modal";
 
 const Page1 = ({ pageChange }) => {
   const september = {
-    name: "September 2023",
+    name: "September",
     startDate: "2023-09-01",
   };
 
   const october = {
-    name: "October 2023",
+    name: "October",
     startDate: "2023-10-01",
   };
 
@@ -42,6 +42,8 @@ const Page1 = ({ pageChange }) => {
         markedDates={markedDates}
         hideArrows={true}
         hideExtraDays={true}
+        monthFormat={"MMMM"}
+        dayComponent={""}
         onDayPress={(day) => {
           if (markedDates[day.dateString]) {
             toggleModal(day.dateString);
@@ -57,6 +59,7 @@ const Page1 = ({ pageChange }) => {
         theme={theme}
         hideExtraDays={true}
         backgroundColor="transparent"
+        monthFormat={"MMMM"}
       />
       <Modal style={styles.popscreen} isVisible={isModalVisible}>
         <LinearGradient

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import Page1 from "./components/Home";
-import Page2 from "./components/Popup";
-import Page3 from "./components/Summary";
+import Page2 from "./components/Summary";
 import * as SplashScreen from "expo-splash-screen";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -35,6 +34,20 @@ export default function App() {
     prepare();
   }, []);
 
+  const options = {
+    method: "GET",
+    headers: { "User-Agent": "insomnia/8.1.0" },
+  };
+
+  fetch("http://11.12.9.26:8000/", options)
+    .then((response) => response.json())
+    .then((response) => {
+      console.log(response);
+      const year = response.data[0].year;
+      console.log("Year : ", year);
+    })
+    .catch((err) => console.error(err));
+
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
@@ -47,9 +60,6 @@ export default function App() {
     }
     if (page === 2) {
       return <Page2 pageChange={(pageNum) => setPage(pageNum)} />;
-    }
-    if (page === 3) {
-      return <Page3 pageChange={(pageNum) => setPage(pageNum)} />;
     }
   };
 
