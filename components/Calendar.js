@@ -59,21 +59,17 @@ function Calendar({ monthName, startDay, noOfDays, availableDates, onClick }) {
                 ))}
             </View>
             <View style={styles.grid}>
-                {monthTable.map((row) => {
+                {monthTable.map((row, i) => {
+                    const rowKey = monthName + '-r' + i;
                     return (
-                        <View style={styles.row}>
-                            {row.map((cell) => {
+                        <View key={rowKey} style={styles.row}>
+                            {row.map((cell, i) => {
                                 let isAvailable = availableDates.indexOf(cell) != -1;
                                 return !isAvailable ? (
                                     <Text style={Platform.OS === 'ios' ? styles.iosCell : styles.cell}>{cell}</Text>
                                 ) : (
-                                    <TouchableOpacity
-                                        style={styles.button}
-                                        onPress={(_) => onClick(cell)}
-                                    >
-                                        <Text
-                                            style={[Platform.OS === 'ios' ? styles.iosCell : styles.cell, { fontFamily: "Poppins_700Bold" }]}
-                                        >
+                                    <TouchableOpacity style={styles.button} onPress={(_) => onClick(cell)}>
+                                        <Text style={[Platform.OS === 'ios' ? styles.iosCell : styles.cell, { fontFamily: "Poppins_700Bold" }]}>
                                             {cell}
                                         </Text>
                                         <View style={Platform.OS === 'ios' ? styles.iosDot : styles.dot}></View>

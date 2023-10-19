@@ -6,43 +6,47 @@ import { LinearGradient } from "expo-linear-gradient";
 import Modal from "react-native-modal";
 import Calendar from "./Calendar";
 
-const Home = ({ data }) => {
-    const [selectedDate, setSelectedDate] = useState(0);
-    const [selectedMonth, setSelectedMonth] = useState('');
+const Home = ({ data, pageChange, selected, setSelected }) => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [suffix, setSuffix] = useState('');
-    const [time, setTime] = useState([]);
+
+    const [absentees, setAbsentees] = useState([]);
 
     const toggleModal = () => {
-
         setModalVisible(!isModalVisible);
     };
 
     const handleClick = async (year, month, date) => {
-        console.log(year, month, date);
-        setSelectedDate(date);
-        setSelectedMonth(month);
         const suffix = date % 10 === 1 && date !== 11 ? 'st' : date % 10 === 2 && date !== 12 ? 'nd' : date % 10 === 3 && date !== 13 ? 'rd' : 'th';
-        setSuffix(suffix);
-        // After fetch data
 
-        // store it!
-        // call toggleModal
         try {
             const options = { method: 'GET', headers: { 'User-Agent': 'insomnia/8.1.0' } };
 
-            await fetch(`http://11.12.34.113:8000/records?year=${year}&month=${month}&date=${date}`, options)
-                .then(response => response.json())
-                .then(response => { setTime(response.data), console.log(response.data) })
-                .catch(err => console.error(err));
-        }
-        catch (error) {
+            const data = await fetch(`http://11.12.34.113:8000/records?year=${year}&month=${month}&date=${date}`, options);
+            const res = await data.json();
+            setSelected({ ...selected, year, suffix, month, date, time: res.data })
+            setSuffix(suffix);
+            toggleModal();
+
+        } catch (error) {
             console.error('Error:', error);
         }
-        console.log(time);
-        toggleModal();
     }
 
+    const handleTimeClick = async (period) => {
+        try {
+            const options = { method: 'GET' };
+
+            const data = await fetch(`http://11.12.34.113:8000/records?year=${selected.year}&month=${selected.month}&date=${selected.date}&time=${period}`, options)
+            const res = await data.json();
+            console.log(res);
+            setSelected({ ...selected, period, info: res.data, image: res.imageUri });
+            pageChange(2);
+
+        } catch (error) {
+            console.error('Error :', error);
+        }
+    }
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -56,6 +60,7 @@ const Home = ({ data }) => {
                                         year.months.map(month => {
                                             return (
                                                 <Calendar
+                                                    key={month + ' ' + year}
                                                     monthName={month.month}
                                                     startDay={month.startDay}
                                                     noOfDays={month.noOfDays}
@@ -77,9 +82,9 @@ const Home = ({ data }) => {
                     colors={["#B2FFC8", "#C0E8DD", "#879DC3"]}
                     style={styles.popup}
                 >
-                    <Text style={styles.popDate}>{selectedDate}{suffix} {selectedMonth}</Text>
+                    <Text style={styles.popDate}>{selected.date}{suffix} {selected.month}</Text>
                     <Text style={styles.popText}>Availabe Records</Text>
-                    <View>{time.map(period => <View style={styles.interval}><Image source={require('../assets/bulletin.png')}></Image><Text style={styles.intervalText}>{period}</Text></View>)}</View>
+                    <View>{selected.time.map(period => <TouchableOpacity onPress={_ => handleTimeClick(period)} style={styles.interval}><Image source={require('../assets/bulletin.png')}></Image><Text style={styles.intervalText}>{period}</Text></TouchableOpacity>)}</View>
                     <TouchableOpacity style={styles.closebtn} onPress={() => toggleModal('')}><Text style={styles.closeText}>Close</Text></TouchableOpacity>
                 </LinearGradient>
             </Modal>

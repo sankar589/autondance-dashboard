@@ -19,8 +19,8 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const [page, setPage] = useState(1);
-
   const [calendarData, setCalendarData] = useState(null);
+  const [selected, setSelected] = useState({ year: null, month: null, date: null, suffix: null, period: null, image: null, time: [], info: [] });
 
   useEffect(() => {
     (async function prepare() {
@@ -56,10 +56,10 @@ export default function App() {
 
   const pickPageToRender = () => {
     if (page === 1) {
-      return <Home data={calendarData} />;
+      return <Home selected={selected} setSelected={setSelected} pageChange={(pageNum) => setPage(pageNum)} data={calendarData} />;
     }
     if (page === 2) {
-      return <Summary pageChange={(pageNum) => setPage(pageNum)} />;
+      return <Summary selected={selected} setSelected={setSelected} pageChange={(pageNum) => setPage(pageNum)} />;
     }
   };
 
