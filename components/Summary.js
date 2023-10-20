@@ -1,7 +1,17 @@
 import * as React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
+import { useState } from "react";
+import CheckBox from 'expo-checkbox';
 
 const Page2 = ({ selected, setSelected, pageChange }) => {
+  const [selectedItems, setSelectedItems] = useState(selected.info.map(() => false));
+
+  const handleSelection = (index) => {
+    const updatedSelectedItems = [...selectedItems];
+    updatedSelectedItems[index] = !updatedSelectedItems[index];
+    setSelectedItems(updatedSelectedItems);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.timingdetails}>
@@ -18,7 +28,20 @@ const Page2 = ({ selected, setSelected, pageChange }) => {
           <Text style={[{ fontFamily: "Poppins_700Bold", fontSize: 24 }]}>Absentee</Text>
           <Text style={[{ fontFamily: "Poppins_700Bold", fontSize: 24, color: '#D66969' }]}>{selected.info.length}</Text>
         </View>
-        <View>{selected.info.map((details, i) => <View style={[styles.absentTable, { backgroundColor: i % 2 ? '#D7D7D7' : '#E8E8E8' }]}><Text style={[{ fontFamily: "Poppins_600SemiBold" }]}>{details.id}</Text><Text style={[{ fontFamily: "Poppins_600SemiBold" }]}>{details.name}</Text><TouchableOpacity style={styles.button}></TouchableOpacity></View>)}</View>
+        <ScrollView>
+          {selected.info.map((details, i) => (
+            <View key={i} style={[styles.absentTable, { backgroundColor: i % 2 ? '#D7D7D7' : '#E8E8E8' }]}>
+              <View style={styles.absentInfo}>
+                <Text style={[{ fontFamily: "Poppins_600SemiBold", fontSize: 16 }]}>{details.id}</Text>
+                <Text style={[{ fontFamily: "Poppins_600SemiBold", flex: 1, fontSize: 16 }]}>{details.name}</Text>
+              </View>
+              <CheckBox
+                value={selectedItems[i]}
+                onValueChange={() => handleSelection(i)}
+                style={styles.button}
+              />
+            </View>))
+          }</ScrollView>
       </View>
       <TouchableOpacity style={styles.goBack} onPress={() => { pageChange(1); setSelected({ year: null, month: null, date: null, suffix: null, period: null, image: null, time: [], info: [] }) }}><Text style={[{ fontFamily: "Poppins_600SemiBold", color: "#FFFFFF", textAlign: 'center' }]}>Go Back</Text></TouchableOpacity>
     </View >
@@ -52,11 +75,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#E8E8E8",
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 15,
+  },
+  absentInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    columnGap: 32,
   },
   button: {
-    width: 15,
-    height: 15,
+    width: 25,
+    height: 25,
     borderColor: '#20242D',
     borderWidth: 1,
     borderRadius: 4,
@@ -71,3 +99,4 @@ const styles = StyleSheet.create({
 });
 
 export default Page2;
+
