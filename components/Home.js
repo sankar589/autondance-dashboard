@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
 
 import Modal from "react-native-modal";
 import Calendar from "./Calendar";
 
-const Home = ({ data }) => {
-
-    const [selectedDate, setSelectedDate] = useState(0);
+const Home = ({ data, pageChange, selected, setSelected }) => {
     const [isModalVisible, setModalVisible] = useState(false);
+    const [suffix, setSuffix] = useState('');
 
-    const toggleModal = (date) => {
-        setSelectedDate(date);
+    const [absentees, setAbsentees] = useState([]);
+
+    const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
 
@@ -49,46 +49,46 @@ const Home = ({ data }) => {
     }
     return (
         <View style={styles.container}>
-            <View>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 {
                     data.map(year => {
                         return (
-                            <View style={{rowGap: 50}}>
+                            <View style={{ rowGap: 50 }}>
                                 <Text style={styles.title}>{year.year}</Text>
-                                <View style={{rowGap: 50}}>
-                                {
-                                year.months.map(month => {
-                                    return (
-                                        <Calendar 
-                                            monthName={month.month}
-                                            startDay={month.startDay}
-                                            noOfDays={month.noOfDays}
-                                            availableDates={month.availableDates}
-                                            onClick={(date) => handleClick(year.year, month.month, date)}
-                                        />
-                                    )
-                                })
-                                }
+                                <View style={{ rowGap: 50 }}>
+                                    {
+                                        year.months.map(month => {
+                                            return (
+                                                <Calendar
+                                                    key={month + ' ' + year}
+                                                    monthName={month.month}
+                                                    startDay={month.startDay}
+                                                    noOfDays={month.noOfDays}
+                                                    availableDates={month.availableDates}
+                                                    onClick={(date) => handleClick(year.year, month.month, date)}
+                                                />
+                                            )
+                                        })
+                                    }
                                 </View>
                             </View>
                         )
                     })
                 }
-            </View>
+            </ScrollView>
 
             <Modal style={styles.popscreen} isVisible={isModalVisible}>
                 <LinearGradient
                     colors={["#B2FFC8", "#C0E8DD", "#879DC3"]}
                     style={styles.popup}
                 >
-                    <Text>Date: {selectedDate}</Text>
-                    <Text>Some information about this date.</Text>
-                    <TouchableOpacity onPress={() => toggleModal("")}>
-                        <Text>Close</Text>
-                    </TouchableOpacity>
+                    <Text style={styles.popDate}>{selected.date}{suffix} {selected.month}</Text>
+                    <Text style={styles.popText}>Availabe Records</Text>
+                    <View>{selected.time.map(period => <TouchableOpacity onPress={_ => handleTimeClick(period)} style={styles.interval}><Image source={require('../assets/bulletin.png')}></Image><Text style={styles.intervalText}>{period}</Text></TouchableOpacity>)}</View>
+                    <TouchableOpacity style={styles.closebtn} onPress={() => toggleModal('')}><Text style={styles.closeText}>Close</Text></TouchableOpacity>
                 </LinearGradient>
             </Modal>
-        </View>
+        </View >
     );
 };
 
@@ -111,8 +111,44 @@ const styles = StyleSheet.create({
         width: 300,
         height: 400,
         borderRadius: 20,
-        alignItems: "center",
-        justifyContent: "center",
+        padding: 40,
+        justifyContent: "flex-start",
+    },
+    popDate: {
+        color: "#D66969",
+        fontFamily: "Poppins_700Bold",
+        fontSize: 24,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    popText: {
+        fontFamily: "Poppins_600SemiBold",
+        color: "#2D3C43",
+        fontSize: 18,
+        marginBottom: 10,
+    },
+    intervalText: {
+        marginLeft: 10,
+        textDecorationLine: 'underline',
+        fontFamily: "Poppins_400Regular",
+    },
+    interval: {
+        flexDirection: 'row',
+        padding: 10,
+    },
+    closebtn: {
+        width: 110,
+        padding: 10,
+        backgroundColor: "#D66969",
+        top: 40,
+        left: 60,
+        borderRadius: 5,
+    },
+    closeText: {
+        color: "#FFFFFF",
+        textAlign: "center",
+        fontFamily: "Poppins_600SemiBold",
+        fontSize: 18,
     },
 });
 
