@@ -47,7 +47,8 @@ export default function App() {
   }, [appIsReady]);
 
   async function loadCalendar() {
-    const res = await fetch("http://11.12.34.113:8000/", {
+    const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/`, {
+
       method: "GET",
     });
     const data = await res.json();

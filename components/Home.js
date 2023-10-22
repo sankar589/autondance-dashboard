@@ -22,7 +22,7 @@ const Home = ({ data, pageChange, selected, setSelected }) => {
         try {
             const options = { method: 'GET', headers: { 'User-Agent': 'insomnia/8.1.0' } };
 
-            const data = await fetch(`http://11.12.34.113:8000/records?year=${year}&month=${month}&date=${date}`, options);
+            const data = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/records?year=${year}&month=${month}&date=${date}`, options);
             const res = await data.json();
             setSelected({ ...selected, year, suffix, month, date, time: res.data })
             setSuffix(suffix);
@@ -37,7 +37,7 @@ const Home = ({ data, pageChange, selected, setSelected }) => {
         try {
             const options = { method: 'GET' };
 
-            const data = await fetch(`http://11.12.34.113:8000/records?year=${selected.year}&month=${selected.month}&date=${selected.date}&time=${period}`, options)
+            const data = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/records?year=${selected.year}&month=${selected.month}&date=${selected.date}&time=${period}`, options)
             const res = await data.json();
             console.log(res);
             setSelected({ ...selected, period, info: res.data, image: res.imageUri });
@@ -53,14 +53,14 @@ const Home = ({ data, pageChange, selected, setSelected }) => {
                 {
                     data.map(year => {
                         return (
-                            <View style={{ rowGap: 50 }}>
+                            <View key={year.year} style={{ rowGap: 50 }}>
                                 <Text style={styles.title}>{year.year}</Text>
                                 <View style={{ rowGap: 50 }}>
                                     {
                                         year.months.map(month => {
                                             return (
                                                 <Calendar
-                                                    key={month + ' ' + year}
+                                                    key={`${year.year}-${month.month}`}
                                                     monthName={month.month}
                                                     startDay={month.startDay}
                                                     noOfDays={month.noOfDays}
@@ -84,7 +84,14 @@ const Home = ({ data, pageChange, selected, setSelected }) => {
                 >
                     <Text style={styles.popDate}>{selected.date}{suffix} {selected.month}</Text>
                     <Text style={styles.popText}>Availabe Records</Text>
-                    <View>{selected.time.map(period => <TouchableOpacity onPress={_ => handleTimeClick(period)} style={styles.interval}><Image source={require('../assets/bulletin.png')}></Image><Text style={styles.intervalText}>{period}</Text></TouchableOpacity>)}</View>
+                    <View>
+                        {selected.time.map(period => 
+                            <TouchableOpacity key={period} onPress={_ => handleTimeClick(period)} style={styles.interval}>
+                                <Image source={require('../assets/bulletin.png')}/>
+                                <Text style={styles.intervalText}>{period}</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
                     <TouchableOpacity style={styles.closebtn} onPress={() => toggleModal('')}><Text style={styles.closeText}>Close</Text></TouchableOpacity>
                 </LinearGradient>
             </Modal>
