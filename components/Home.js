@@ -16,10 +16,37 @@ const Home = ({ data }) => {
         setModalVisible(!isModalVisible);
     };
 
-    const handleClick = (year, month, date) => {
-        console.log(year, month, date);
+    const handleClick = async (year, month, date) => {
+        const suffix = date % 10 === 1 && date !== 11 ? 'st' : date % 10 === 2 && date !== 12 ? 'nd' : date % 10 === 3 && date !== 13 ? 'rd' : 'th';
+
+        try {
+            const options = { method: 'GET', headers: { 'User-Agent': 'insomnia/8.1.0' } };
+
+            const data = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/records?year=${year}&month=${month}&date=${date}`, options);
+            const res = await data.json();
+            setSelected({ ...selected, year, suffix, month, date, time: res.data })
+            setSuffix(suffix);
+            toggleModal();
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
+    const handleTimeClick = async (period) => {
+        try {
+            const options = { method: 'GET' };
+
+            const data = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/records?year=${selected.year}&month=${selected.month}&date=${selected.date}&time=${period}`, options)
+            const res = await data.json();
+            console.log(res);
+            setSelected({ ...selected, period, info: res.data, image: res.imageUri });
+            pageChange(2);
+
+        } catch (error) {
+            console.error('Error :', error);
+        }
+    }
     return (
         <View style={styles.container}>
             <View>

@@ -52,14 +52,13 @@ export default function App() {
         setCalendarData(data["data"])
     }
 
-    const pickPageToRender = () => {
-        if (page === 1) {
-            return <Home data={calendarData} />
-        }
-        if (page === 2) {
-            return <Summary pageChange={(pageNum) => setPage(pageNum)} />;
-        }
-    };
+  async function loadCalendar() {
+    const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/`, {
+      method: "GET",
+    });
+    const data = await res.json();
+    setCalendarData(data["data"]);
+  }
 
     if (!appIsReady) {
         return null;
