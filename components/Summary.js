@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView } from "rea
 import { useState } from "react";
 import CheckBox from 'expo-checkbox';
 
-const Page2 = ({ selected, setSelected, pageChange }) => {
+const Summary = ({ selected, setSelected, pageChange }) => {
   const [selectedItems, setSelectedItems] = useState(selected.info.map(() => false));
 
   const handleSelection = (index) => {
@@ -30,7 +30,7 @@ const Page2 = ({ selected, setSelected, pageChange }) => {
         </View>
         <ScrollView>
           {selected.info.map((details, i) => (
-            <View key={i} style={[styles.absentTable, { backgroundColor: i % 2 ? '#D7D7D7' : '#E8E8E8' }]}>
+            <View key={details.id} style={[styles.absentTable, { backgroundColor: i % 2 ? '#D7D7D7' : '#E8E8E8' }]}>
               <View style={styles.absentInfo}>
                 <Text style={[{ fontFamily: "Poppins_600SemiBold", fontSize: 16 }]}>{details.id}</Text>
                 <Text style={[{ fontFamily: "Poppins_600SemiBold", flex: 1, fontSize: 16 }]}>{details.name}</Text>
@@ -98,5 +98,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Page2;
+export default Summary;
 

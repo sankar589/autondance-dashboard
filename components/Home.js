@@ -53,14 +53,14 @@ const Home = ({ data, pageChange, selected, setSelected }) => {
                 {
                     data.map(year => {
                         return (
-                            <View style={{ rowGap: 50 }}>
+                            <View key={year.year} style={{ rowGap: 50 }}>
                                 <Text style={styles.title}>{year.year}</Text>
                                 <View style={{ rowGap: 50 }}>
                                     {
                                         year.months.map(month => {
                                             return (
                                                 <Calendar
-                                                    key={month + ' ' + year}
+                                                    key={`${year.year}-${month.month}`}
                                                     monthName={month.month}
                                                     startDay={month.startDay}
                                                     noOfDays={month.noOfDays}
@@ -84,7 +84,14 @@ const Home = ({ data, pageChange, selected, setSelected }) => {
                 >
                     <Text style={styles.popDate}>{selected.date}{suffix} {selected.month}</Text>
                     <Text style={styles.popText}>Availabe Records</Text>
-                    <View>{selected.time.map(period => <TouchableOpacity onPress={_ => handleTimeClick(period)} style={styles.interval}><Image source={require('../assets/bulletin.png')}></Image><Text style={styles.intervalText}>{period}</Text></TouchableOpacity>)}</View>
+                    <View>
+                        {selected.time.map(period => 
+                            <TouchableOpacity key={period} onPress={_ => handleTimeClick(period)} style={styles.interval}>
+                                <Image source={require('../assets/bulletin.png')}/>
+                                <Text style={styles.intervalText}>{period}</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
                     <TouchableOpacity style={styles.closebtn} onPress={() => toggleModal('')}><Text style={styles.closeText}>Close</Text></TouchableOpacity>
                 </LinearGradient>
             </Modal>

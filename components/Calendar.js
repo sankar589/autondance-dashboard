@@ -1,9 +1,5 @@
 import { Text, View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 
-// TODO:
-// 1. define platform specfic style for font-size and bottom
-// 2. Scrollable instead of View
-
 function generateMonthTable(startDay, noOfDays) {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const si = days.indexOf(startDay);
@@ -53,22 +49,21 @@ function Calendar({ monthName, startDay, noOfDays, availableDates, onClick }) {
             <Text style={styles.title}>{monthName}</Text>
             <View style={styles.header}>
                 {days.map((day) => (
-                    <Text style={Platform.OS === 'ios' ? styles.iosHeaderCell : styles.headerCell} key={day}>
+                    <Text key={day} style={Platform.OS === 'ios' ? styles.iosHeaderCell : styles.headerCell}>
                         {day}
                     </Text>
                 ))}
             </View>
             <View style={styles.grid}>
                 {monthTable.map((row, i) => {
-                    const rowKey = monthName + '-r' + i;
                     return (
-                        <View key={rowKey} style={styles.row}>
-                            {row.map((cell, i) => {
+                        <View key={i} style={styles.row}>
+                            {row.map((cell, j) => {
                                 let isAvailable = availableDates.indexOf(cell) != -1;
                                 return !isAvailable ? (
-                                    <Text style={Platform.OS === 'ios' ? styles.iosCell : styles.cell}>{cell}</Text>
+                                    <Text key={i * 10 + j} style={Platform.OS === 'ios' ? styles.iosCell : styles.cell}>{cell}</Text>
                                 ) : (
-                                    <TouchableOpacity style={styles.button} onPress={(_) => onClick(cell)}>
+                                    <TouchableOpacity key={`${i}-${j}`} style={styles.button} onPress={(_) => onClick(cell)}>
                                         <Text style={[Platform.OS === 'ios' ? styles.iosCell : styles.cell, { fontFamily: "Poppins_700Bold" }]}>
                                             {cell}
                                         </Text>
