@@ -18,12 +18,6 @@ In the root of the project create a file named `.env.local` and set the api endp
 EXPO_PUBLIC_API_URL=http://<ip_address>:<port>
 ```
 
-# Setup environmental variables
-
-In the root of the project create a file named `.env.local` and set the api endpoint
-```env
-EXPO_PUBLIC_API_URL=http://<ip_address>:<port>
-```
 
 # Run the App
 

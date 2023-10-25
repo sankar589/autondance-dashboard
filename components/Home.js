@@ -11,18 +11,18 @@ const Home = ({ calendar, attendance, setAttendance, next }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleSelectedDate = (year, month, _date, _timings) => {
-        setAttendance({year, month, date: _date, time: null, attendance: null});
+        setAttendance({ year, month, date: _date, time: null, attendance: null });
         setTimings(_timings);
         setIsModalVisible(!isModalVisible);
     }
 
-    async function handleSelectedTime(time){
+    async function handleSelectedTime(time) {
         try {
             const options = { method: 'GET' };
             const data = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/attendance?year=${attendance.year}&month=${attendance.month}&date=${attendance.date}&time=${time}`, options)
             const { attendance: _attendance, imageUri } = await data.json();
 
-            setAttendance({...attendance, time, attendance: _attendance, imageUri})
+            setAttendance({ ...attendance, time, attendance: _attendance, imageUri })
             next()
         } catch (err) {
             console.error("Error occured during /attendance")
@@ -47,7 +47,7 @@ const Home = ({ calendar, attendance, setAttendance, next }) => {
                                                     month={month}
                                                     year={year}
                                                     markedDates={dates}
-                                                    onClick={( _date ) => handleSelectedDate(year, month, _date, dates.find(({ date }) => date == _date).times)}
+                                                    onClick={(_date) => handleSelectedDate(year, month, _date, dates.find(({ date }) => date == _date).times)}
                                                 />
                                             )
                                         })
@@ -65,15 +65,18 @@ const Home = ({ calendar, attendance, setAttendance, next }) => {
                     style={styles.popup}
                 >
                     <Text style={styles.popTitle}>{attendance.date} {attendance.month}</Text>
-                    <Text style={styles.popHeader}>Available Timings</Text>
-                    <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.popHeader}>Available Timings</Text>
+                        <Text style={styles.popHeader}>{timings.length}</Text>
+                    </View>
+                    <ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%", }}>
                         {timings.map(time =>
                             <Pressable key={time} onPress={_ => handleSelectedTime(time)} style={styles.timeButton}>
                                 <Image source={require('../assets/bulletin.png')} />
                                 <Text style={styles.timeText}>{time}</Text>
                             </Pressable>
                         )}
-                    </View>
+                    </ScrollView>
                     <Pressable style={styles.closeButton} onPress={() => setIsModalVisible(false)}><Text style={styles.closeText}>Close</Text></Pressable>
                 </LinearGradient>
             </Modal>
@@ -132,6 +135,7 @@ const styles = StyleSheet.create({
         top: 40,
         left: 60,
         borderRadius: 5,
+        marginBottom: 20
     },
     closeText: {
         color: "#FFFFFF",
