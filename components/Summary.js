@@ -2,12 +2,20 @@ import * as React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
 import CheckBox from 'expo-checkbox';
 
-const Summary = ({ attendance, back }) => {
-    const handleSelection = (index) => {
-        const updatedSelectedItems = [...selectedItems];
-        updatedSelectedItems[index] = !updatedSelectedItems[index];
-        setSelectedItems(updatedSelectedItems);
-    };
+const Summary = ({ attendance, setAttendance, back }) => {
+    const updateAttendance = async (student, isPresent) => {
+        const options = {method: 'PATCH'};
+        try {
+            const newAttendance = [...attendance.attendance.filter(s => s.id != student.id), {...student, isPresent}]
+            newAttendance.sort((a, b) => a.id.substr(a.id.length - 2) - b.id.substr(b.id.length - 2))
+            setAttendance({...attendance, attendance: newAttendance})
+
+            fetch(`${process.env.EXPO_PUBLIC_API_URL}/attendance?year=${attendance.year}&month=${attendance.month}&date=${attendance.date}&time=${attendance.time}&student_id=${student.id}&is_present=${isPresent}`, options)
+        } catch (err) {
+            console.error("Error occured during PATCH /attendance")
+            console.error(err)
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -34,7 +42,7 @@ const Summary = ({ attendance, back }) => {
                             </View>
                             <CheckBox
                                 value={student.isPresent}
-                                onValueChange={_ => { }}
+                                onValueChange={isPresent => updateAttendance(student, isPresent)}
                                 style={styles.checkBox}
                             />
                         </View>))
