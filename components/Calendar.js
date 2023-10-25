@@ -1,8 +1,11 @@
 import { Text, View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 
-function generateMonthTable(startDay, noOfDays) {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const si = days.indexOf(startDay);
+function generateMonthTable(month, year) {
+    const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    month = months.indexOf(month)
+
+    const si = new Date(year, month, 1).getDay()
+    const noOfDays = new Date(year, month+1, 0).getDate()
     const n = 7;
 
     let d = 1;
@@ -40,36 +43,35 @@ function generateMonthTable(startDay, noOfDays) {
     return table;
 }
 
-function Calendar({ monthName, startDay, noOfDays, availableDates, onClick }) {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const monthTable = generateMonthTable(startDay, noOfDays);
+function Calendar({ month, year, markedDates, onClick }) {
+    const headers = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthTable = generateMonthTable(month, year);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{monthName}</Text>
+            <Text style={styles.title}>{month}</Text>
             <View style={styles.header}>
-                {days.map((day) => (
-                    <Text key={day} style={Platform.OS === 'ios' ? styles.iosHeaderCell : styles.headerCell}>
-                        {day}
+                {headers.map(header => (
+                    <Text key={header} style={Platform.OS === 'ios' ? styles.iosHeaderCell : styles.headerCell}>
+                        {header}
                     </Text>
                 ))}
             </View>
-            <View style={styles.grid}>
+
+            <View style={styles.calendar}>
                 {monthTable.map((row, i) => {
                     return (
                         <View key={i} style={styles.row}>
                             {row.map((cell, j) => {
-                                let isAvailable = availableDates.indexOf(cell) != -1;
-                                return !isAvailable ? (
-                                    <Text key={i * 10 + j} style={Platform.OS === 'ios' ? styles.iosCell : styles.cell}>{cell}</Text>
-                                ) : (
-                                    <TouchableOpacity key={`${i}-${j}`} style={styles.button} onPress={(_) => onClick(cell)}>
+                                return markedDates.find(({ date }) => date == cell) ? 
+                                    <TouchableOpacity key={`${i}-${j}`} style={styles.button} onPress={_ => onClick(cell)}>
                                         <Text style={[Platform.OS === 'ios' ? styles.iosCell : styles.cell, { fontFamily: "Poppins_700Bold" }]}>
                                             {cell}
                                         </Text>
                                         <View style={Platform.OS === 'ios' ? styles.iosDot : styles.dot}></View>
                                     </TouchableOpacity>
-                                );
+                                    :
+                                    <Text key={i * 10 + j} style={Platform.OS === 'ios' ? styles.iosCell : styles.cell}>{cell}</Text>
                             })}
                         </View>
                     );
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
         textAlign: "right",
         color: "#1F252D",
     },
-    grid: {
+    calendar: {
         rowGap: 20,
     },
     row: {
