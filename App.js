@@ -24,10 +24,6 @@ export default function App() {
     const [attendance, setAttendance] = useState({year: null, month: null, date: null, time: null, attendance: null, imageUri: null})
 
     useEffect(() => {
-        console.log(attendance)
-    }, [attendance])
-
-    useEffect(() => {
         (async function() {
             try {
                 await Font.loadAsync({
@@ -69,7 +65,7 @@ export default function App() {
         if (page === "/home") {
             return <Home calendar={calendar} attendance={attendance} setAttendance={setAttendance} next={() => setPage("/summary")} />;
         } else if (page === "/summary") {
-            return <Summary attendance={attendance} back={reset} />
+            return <Summary attendance={attendance} setAttendance={setAttendance} back={reset} />
         } else {
             return null;
         }
