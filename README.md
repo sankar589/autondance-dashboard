@@ -25,3 +25,8 @@ You can run the app using the expo go by scanning the QR code displayed in the t
 ```bash
 npx expo start
 ```
+
+# Output
+
+![IMG_20240211_104445](https://github.com/sankar589/autondance-upload/assets/119640217/a45bc5e6-fdf9-4d80-8454-4816c4a7792f)
+
